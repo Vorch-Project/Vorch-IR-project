@@ -493,12 +493,13 @@ function videoHtml(path, item, role) {
       <div class="ph-icon">🎬</div><div style="font-size:12px;">${path}</div>
     </div></div>`;
   }
+  const posterPath = item.poster ? item.poster : path.replace(/\.mp4$/, "_poster.jpg");
+  const poster = `poster="${BASE_URL + posterPath}"`;
   // long results get a scrubber; everything else autoplays muted loop
   if (item.long && role === "result") {
-    const poster = item.poster ? `poster="${BASE_URL + item.poster}"` : "";
     return `<div class="${cls}"><video src="${src}" ${poster} controls preload="metadata" playsinline></video></div>`;
   }
-  return `<div class="${cls}"><video src="${src}" autoplay loop muted playsinline preload="none" data-lazy="1"></video></div>`;
+  return `<div class="${cls}"><video src="${src}" ${poster} autoplay loop muted playsinline preload="none" data-lazy="1"></video></div>`;
 }
 
 function refsHtml(paths) {
