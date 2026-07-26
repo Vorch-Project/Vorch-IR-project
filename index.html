@@ -234,9 +234,22 @@
     position: relative; width: 100%; background: #0b0d12;
     aspect-ratio: 16 / 9;
     display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
   }
   .media-box.portrait { aspect-ratio: 16 / 9; }  /* vertical video letterboxed into 16:9 */
   .card video, .card img.poster { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .media-box .play-btn {
+    position: absolute; inset: 0; z-index: 3;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(8,10,16,0.22); transition: background .15s ease;
+  }
+  .media-box .play-btn svg {
+    width: 52px; height: 52px; filter: drop-shadow(0 4px 14px rgba(0,0,0,.45));
+    transition: transform .15s ease;
+  }
+  .media-box:hover .play-btn { background: rgba(8,10,16,0.34); }
+  .media-box:hover .play-btn svg { transform: scale(1.08); }
+  .media-box.is-playing .play-btn { display: none; }
 
   .placeholder {
     color: #8b929c; font-size: 14px; text-align: center; padding: 20px;
@@ -318,7 +331,7 @@
 <header class="hero">
   <div class="wrap">
     <p class="eyebrow">Vorch-IR</p>
-    <h1>Long-Form Unified Multimodal Identity Replacement Video Generation</h1>
+    <h1>Long-Form Multimodal Identity Replacement Video Generation via a Unified Framework</h1>
     <p class="authors">Yaole Wang<sup>1*</sup> &nbsp; Xiaoyu Chen<sup>2*</sup> &nbsp; Xin Ma<sup>1*</sup> &nbsp; Yang Ding<sup>1</sup> &nbsp; Jingjing Chen<sup>2</sup> &nbsp; Lin Ma<sup>1&dagger;</sup> &nbsp; Yaohui Wang<sup>1&dagger;</sup></p>
     <p class="affil"><sup>1</sup> Vorch Team &nbsp;&nbsp; <sup>2</sup> Fudan University &nbsp;&nbsp; <span style="font-size:12.5px;">&dagger; Corresponding authors</span></p>
 
@@ -484,6 +497,8 @@ function el(html) {
   return t.content.firstChild;
 }
 
+const PLAY_ICON = `<svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86A1 1 0 0 0 8 5.14z"/></svg>`;
+
 // render a video (result or driving). `role` = "result" | "driving"
 function videoHtml(path, item, role) {
   const src = BASE_URL ? BASE_URL + path : "";
@@ -495,11 +510,12 @@ function videoHtml(path, item, role) {
   }
   const posterPath = item.poster ? item.poster : path.replace(/\.mp4$/, "_poster.jpg");
   const poster = `poster="${BASE_URL + posterPath}"`;
-  // long results get a scrubber; everything else autoplays muted loop
-  if (item.long && role === "result") {
-    return `<div class="${cls}"><video src="${src}" ${poster} controls preload="metadata" playsinline></video></div>`;
-  }
-  return `<div class="${cls}"><video src="${src}" ${poster} autoplay loop muted playsinline preload="none" data-lazy="1"></video></div>`;
+  // long results keep a scrubber; everything else is click-to-play, synced with its paired video
+  const controls = item.long && role === "result" ? "controls" : "";
+  return `<div class="${cls}" data-role="${role}">
+    <video src="${src}" ${poster} ${controls} muted playsinline preload="none" loop></video>
+    <button type="button" class="play-btn" aria-label="Play video">${PLAY_ICON}</button>
+  </div>`;
 }
 
 function refsHtml(paths) {
@@ -593,7 +609,7 @@ function render() {
     }
     app.appendChild(section);
   }
-  setupLazyPlay();
+  setupClickToPlay();
   setupReveal();
 }
 
@@ -607,24 +623,33 @@ function setupReveal() {
   cards.forEach((c) => io.observe(c));
 }
 
-function setupLazyPlay() {
-  const vids = document.querySelectorAll('video[data-lazy="1"]');
-  if (!("IntersectionObserver" in window)) {
-    vids.forEach((v) => v.play().catch(() => {}));
-    return;
-  }
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      const v = e.target;
-      if (e.isIntersecting) {
+// click a video prompt / result box: plays both boxes in a `.vid-pair` together
+function setupClickToPlay() {
+  document.querySelectorAll(".vid-pair").forEach((pair) => {
+    const boxes = Array.from(pair.querySelectorAll(".media-box"));
+    const videos = boxes.map((b) => b.querySelector("video")).filter(Boolean);
+    if (!videos.length) return;
+
+    const playAll = () => {
+      boxes.forEach((b) => b.classList.add("is-playing"));
+      videos.forEach((v) => {
         if (v.preload === "none") v.preload = "auto";
         v.play().catch(() => {});
-      } else {
-        v.pause();
-      }
+      });
+    };
+    const pauseAll = () => {
+      boxes.forEach((b) => b.classList.remove("is-playing"));
+      videos.forEach((v) => v.pause());
+    };
+
+    boxes.forEach((box) => {
+      box.addEventListener("click", (e) => {
+        if (e.target.closest("video[controls]")) return;
+        const anyPlaying = videos.some((v) => !v.paused);
+        anyPlaying ? pauseAll() : playAll();
+      });
     });
-  }, { rootMargin: "150px", threshold: 0.25 });
-  vids.forEach((v) => io.observe(v));
+  });
 }
 
 render();
