@@ -9,9 +9,10 @@ built on the LTX2 backbone.
 
 ## Project page
 
-The page is a single self-contained `index.html`. All demo videos and reference
-images live under [`assets/`](assets/) and are loaded via relative paths, so the
-page works both locally and on GitHub Pages.
+The page is a static project page built from `index.html`, `styles.css`, and
+`app.js`. All demo videos, reference images, and local fonts live under
+[`assets/`](assets/) and are loaded via relative paths, so the page works both
+locally and on GitHub Pages.
 
 - **Local:** serve the folder and open it in a browser:
   ```bash
@@ -24,8 +25,11 @@ page works both locally and on GitHub Pages.
 ## Layout
 
 ```
-index.html        # project page (self-contained, relative asset paths)
+index.html        # project page markup
+styles.css        # project page styling
+app.js            # demo data and rendering
 assets/
+  fonts/          # local web fonts
   multi/          # multi-subject replacement cases (videos, frames, references)
   long/           # minute-long video cases
 ```
