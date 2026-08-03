@@ -71,13 +71,14 @@
   }
   /* full paper title — smaller subtitle line */
   header.hero h1 {
-    font-size: clamp(17px, 2.1vw, 23px);
+    font-size: clamp(18px, 2.3vw, 25px);
     font-weight: 600;
     letter-spacing: -0.01em;
     line-height: 1.35;
     margin: 0 auto 22px;
-    max-width: 680px;
+    max-width: 980px;
     color: var(--text);
+    white-space: nowrap;
   }
   header.hero .subtitle {
     color: var(--text-dim);
@@ -86,8 +87,9 @@
     margin: 0 auto 28px;
     line-height: 1.6;
   }
-  .authors { color: var(--text); font-size: 16px; font-weight: 500; margin-bottom: 4px; }
-  .affil { color: var(--text-faint); font-size: 14.5px; margin-bottom: 30px; }
+  .authors { color: var(--text); font-size: 17px; font-weight: 500; margin-bottom: 4px; }
+  .affil { color: var(--text-dim); font-size: 15.5px; margin-bottom: 6px; }
+  .author-note { color: var(--text-faint); font-size: 12.5px; margin: 0 0 30px; }
 
   .links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
   .btn {
@@ -322,6 +324,7 @@
     .vid-pair { grid-template-columns: 1fr; }
     .vid + .vid { border-left: 0; border-top: 1px solid rgba(255,255,255,0.08); }
     header.hero { padding: 72px 22px 52px; }
+    header.hero h1 { white-space: normal; }
     section.block { padding: 44px 0 4px; }
   }
 </style>
@@ -332,8 +335,9 @@
   <div class="wrap">
     <p class="eyebrow">Vorch-IR</p>
     <h1>Long-Form Unified Multimodal Identity Replacement Video Generation</h1>
-    <p class="authors">Yaole Wang<sup>1*</sup> &nbsp; Xiaoyu Chen<sup>2*</sup> &nbsp; Xin Ma<sup>1*</sup> &nbsp; Yang Ding<sup>1</sup> &nbsp; Gang Yue<sup>1</sup> &nbsp; Jingjing Chen<sup>2</sup> &nbsp; Lin Ma&dagger;</sup> &nbsp; Yaohui Wang<sup>1&dagger;</sup></p>
-    <p class="affil"><sup>1</sup> Vorch Team &nbsp;&nbsp; <sup>2</sup> Fudan University &nbsp;&nbsp; <span style="font-size:12.5px;">&dagger; Corresponding authors</span></p>
+    <p class="authors">Yaole Wang<sup>1*</sup> &nbsp; Xiaoyu Chen<sup>2*</sup> &nbsp; Xin Ma<sup>1*</sup> &nbsp; Yang Ding<sup>1</sup> &nbsp; Gang Yue<sup>1</sup> &nbsp; Jingjing Chen<sup>2</sup> &nbsp; Lin Ma<sup>&dagger;</sup> &nbsp; Yaohui Wang<sup>1&dagger;</sup></p>
+    <p class="affil"><sup>1</sup> Vorch Team &nbsp;&nbsp; <sup>2</sup> Fudan University</p>
+    <p class="author-note">*Equal contribution &dagger;Corresponding authors</p>
 
     <div class="links">
       <a class="btn" href="#" target="_blank">
