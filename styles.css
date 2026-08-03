@@ -453,6 +453,36 @@ img {
   gap: 26px;
 }
 
+.load-more-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.load-more-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 32px rgba(30, 45, 51, 0.08);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.load-more-button:hover {
+  border-color: rgba(13, 120, 111, 0.34);
+  color: var(--teal-dark);
+  background: rgba(255, 255, 255, 0.9);
+}
+
 .demo-card {
   overflow: hidden;
   border: 1px solid var(--line);

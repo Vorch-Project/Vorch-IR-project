@@ -289,5 +289,30 @@ function renderCards(rootId, items, renderer) {
   items.forEach((item) => root.appendChild(renderer(item)));
 }
 
-renderCards("multi-gallery", multiCases, renderCaseCard);
+function renderLoadMoreCards(rootId, buttonId, items, renderer, initialCount = 4, batchSize = 4) {
+  const root = document.getElementById(rootId);
+  const button = document.getElementById(buttonId);
+  if (!root) return;
+
+  let renderedCount = 0;
+
+  function appendNext(count) {
+    const nextItems = items.slice(renderedCount, renderedCount + count);
+    nextItems.forEach((item) => root.appendChild(renderer(item)));
+    renderedCount += nextItems.length;
+    if (button) {
+      const shouldHide = renderedCount >= items.length;
+      button.hidden = shouldHide;
+      if (button.parentElement) button.parentElement.hidden = shouldHide;
+    }
+  }
+
+  appendNext(initialCount);
+
+  if (button) {
+    button.addEventListener("click", () => appendNext(batchSize));
+  }
+}
+
+renderLoadMoreCards("multi-gallery", "multi-load-more", multiCases, renderCaseCard);
 renderCards("long-gallery", longCases, renderCaseCard);
